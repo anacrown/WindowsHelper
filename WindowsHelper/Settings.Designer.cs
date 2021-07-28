@@ -102,7 +102,7 @@ namespace WindowsHelper
     {
         #region Private fields
         private ushort _x;
-        private byte _y;
+        private ushort _y;
         #endregion
 
         public ushort X
@@ -117,7 +117,7 @@ namespace WindowsHelper
             }
         }
 
-        public byte Y
+        public ushort Y
         {
             get
             {

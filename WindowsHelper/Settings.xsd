@@ -6,7 +6,7 @@
         <xs:element maxOccurs="unbounded" name="position">
           <xs:complexType>
             <xs:attribute name="X" type="xs:unsignedShort" use="required" />
-            <xs:attribute name="Y" type="xs:unsignedByte" use="required" />
+            <xs:attribute name="Y" type="xs:unsignedShort" use="required" />
           </xs:complexType>
         </xs:element>
         <xs:element maxOccurs="unbounded" name="size">
