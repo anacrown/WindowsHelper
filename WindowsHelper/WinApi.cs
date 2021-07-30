@@ -419,4 +419,20 @@ namespace WindowsHelper
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
     }
+    public static class RectExtension
+    {
+        public static (position position, size size) GetPositionAndSize(this WinApi.RECT rect) => (
+            new position() { X = rect.Left, Y = rect.Top },
+            new size() { width = rect.Right - rect.Left, height = rect.Bottom - rect.Top });
+
+        public static WinApi.RECT FromPositionAndSize(this WinApi.RECT rect, position position, size size)
+        {
+            rect.Left = position.X;
+            rect.Top = position.Y;
+            rect.Right = position.X + size.width;
+            rect.Bottom = position.Y + size.height;
+
+            return rect;
+        }
+    }
 }

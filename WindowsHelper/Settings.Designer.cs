@@ -22,21 +22,36 @@ namespace WindowsHelper
     public partial class window
     {
         #region Private fields
-        private List<windowPosition> _position;
-        private List<windowSize> _size;
-        private List<windowCondition> _condition;
+        private int _selectedposition;
+        private List<position> _position;
+        private int _selectedsize;
+        private List<size> _size;
+        private List<condition> _condition;
         private string _process;
         private windowMode _mode;
+        private bool _enabled;
         #endregion
 
         public window()
         {
-            _condition = new List<windowCondition>();
-            _size = new List<windowSize>();
-            _position = new List<windowPosition>();
+            _condition = new List<condition>();
+            _size = new List<size>();
+            _position = new List<position>();
         }
 
-        public List<windowPosition> position
+        public int selectedposition
+        {
+            get
+            {
+                return _selectedposition;
+            }
+            set
+            {
+                _selectedposition = value;
+            }
+        }
+
+        public List<position> position
         {
             get
             {
@@ -48,7 +63,19 @@ namespace WindowsHelper
             }
         }
 
-        public List<windowSize> size
+        public int selectedsize
+        {
+            get
+            {
+                return _selectedsize;
+            }
+            set
+            {
+                _selectedsize = value;
+            }
+        }
+
+        public List<size> size
         {
             get
             {
@@ -60,7 +87,7 @@ namespace WindowsHelper
             }
         }
 
-        public List<windowCondition> condition
+        public List<condition> condition
         {
             get
             {
@@ -95,17 +122,29 @@ namespace WindowsHelper
                 _mode = value;
             }
         }
+
+        public bool enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
     }
 
     [DebuggerStepThrough]
-    public partial class windowPosition
+    public partial class position
     {
         #region Private fields
-        private ushort _x;
-        private ushort _y;
+        private int _x;
+        private int _y;
         #endregion
 
-        public ushort X
+        public int X
         {
             get
             {
@@ -117,7 +156,7 @@ namespace WindowsHelper
             }
         }
 
-        public ushort Y
+        public int Y
         {
             get
             {
@@ -131,98 +170,12 @@ namespace WindowsHelper
     }
 
     [DebuggerStepThrough]
-    public partial class windowSize
-    {
-        #region Private fields
-        private ushort _width;
-        private ushort _height;
-        #endregion
-
-        public ushort width
-        {
-            get
-            {
-                return _width;
-            }
-            set
-            {
-                _width = value;
-            }
-        }
-
-        public ushort height
-        {
-            get
-            {
-                return _height;
-            }
-            set
-            {
-                _height = value;
-            }
-        }
-    }
-
-    [DebuggerStepThrough]
-    public partial class windowCondition
-    {
-        #region Private fields
-        private List<windowConditionTitle> _title;
-        private windowConditionWidth _width;
-        private windowConditionHeight _height;
-        #endregion
-
-        public windowCondition()
-        {
-            _height = new windowConditionHeight();
-            _width = new windowConditionWidth();
-            _title = new List<windowConditionTitle>();
-        }
-
-        public List<windowConditionTitle> title
-        {
-            get
-            {
-                return _title;
-            }
-            set
-            {
-                _title = value;
-            }
-        }
-
-        public windowConditionWidth width
-        {
-            get
-            {
-                return _width;
-            }
-            set
-            {
-                _width = value;
-            }
-        }
-
-        public windowConditionHeight height
-        {
-            get
-            {
-                return _height;
-            }
-            set
-            {
-                _height = value;
-            }
-        }
-    }
-
-    [DebuggerStepThrough]
-    public partial class windowConditionTitle
+    public partial class title
     {
         #region Private fields
         private string _value;
         private bool _isempty;
-        private windowConditionTitleMode _mode;
+        private titleMode _mode;
         #endregion
 
         public string value
@@ -249,7 +202,7 @@ namespace WindowsHelper
             }
         }
 
-        public windowConditionTitleMode mode
+        public titleMode mode
         {
             get
             {
@@ -262,21 +215,74 @@ namespace WindowsHelper
         }
     }
 
-    public enum windowConditionTitleMode
+    public enum titleMode
     {
         equals,
         notequals,
     }
 
     [DebuggerStepThrough]
-    public partial class windowConditionWidth
+    public partial class condition
     {
         #region Private fields
-        private uint _value;
-        private uint _accuracy;
+        private List<title> _title;
+        private conditionWidth _width;
+        private conditionHeight _height;
         #endregion
 
-        public uint value
+        public condition()
+        {
+            _height = new conditionHeight();
+            _width = new conditionWidth();
+            _title = new List<title>();
+        }
+
+        public List<title> title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                _title = value;
+            }
+        }
+
+        public conditionWidth width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
+            }
+        }
+
+        public conditionHeight height
+        {
+            get
+            {
+                return _height;
+            }
+            set
+            {
+                _height = value;
+            }
+        }
+    }
+
+    [DebuggerStepThrough]
+    public partial class conditionWidth
+    {
+        #region Private fields
+        private int _value;
+        private int _accuracy;
+        #endregion
+
+        public int value
         {
             get
             {
@@ -288,7 +294,7 @@ namespace WindowsHelper
             }
         }
 
-        public uint accuracy
+        public int accuracy
         {
             get
             {
@@ -302,14 +308,14 @@ namespace WindowsHelper
     }
 
     [DebuggerStepThrough]
-    public partial class windowConditionHeight
+    public partial class conditionHeight
     {
         #region Private fields
-        private uint _value;
-        private uint _accuracy;
+        private int _value;
+        private int _accuracy;
         #endregion
 
-        public uint value
+        public int value
         {
             get
             {
@@ -321,7 +327,7 @@ namespace WindowsHelper
             }
         }
 
-        public uint accuracy
+        public int accuracy
         {
             get
             {
@@ -330,6 +336,39 @@ namespace WindowsHelper
             set
             {
                 _accuracy = value;
+            }
+        }
+    }
+
+    [DebuggerStepThrough]
+    public partial class size
+    {
+        #region Private fields
+        private int _width;
+        private int _height;
+        #endregion
+
+        public int width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
+            }
+        }
+
+        public int height
+        {
+            get
+            {
+                return _height;
+            }
+            set
+            {
+                _height = value;
             }
         }
     }

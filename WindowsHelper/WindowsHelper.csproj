@@ -80,7 +80,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BaseViewModel.cs" />
     <Compile Include="IconUtilities.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -98,11 +97,6 @@
     </Compile>
     <Compile Include="Tiler.cs" />
     <Compile Include="WinApi.cs" />
-    <Compile Include="WindowExtensions.cs" />
-    <Compile Include="WindowPositionExtension.cs" />
-    <Compile Include="WindowPositionViewModel.cs" />
-    <Compile Include="WindowSizeExtension.cs" />
-    <Compile Include="WindowSizeViewModel.cs" />
     <Compile Include="WindowViewModel.cs" />
     <Page Include="TaskBarNotifier.xaml">
       <SubType>Designer</SubType>

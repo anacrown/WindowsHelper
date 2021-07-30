@@ -1,65 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="window">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" name="position">
-          <xs:complexType>
-            <xs:attribute name="X" type="xs:unsignedShort" use="required" />
-            <xs:attribute name="Y" type="xs:unsignedShort" use="required" />
-          </xs:complexType>
-        </xs:element>
-        <xs:element maxOccurs="unbounded" name="size">
-          <xs:complexType>
-            <xs:attribute name="width" type="xs:unsignedShort" use="required" />
-            <xs:attribute name="height" type="xs:unsignedShort" use="required" />
-          </xs:complexType>
-        </xs:element>
-        <xs:element maxOccurs="unbounded" name="condition">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element maxOccurs="unbounded" name="title">
-                <xs:complexType>
-                  <xs:attribute name="value" type="xs:string"/>
-                  <xs:attribute name="isempty" type="xs:boolean"/>
-                  <xs:attribute name="mode">
-                    <xs:simpleType>
-                      <xs:restriction base="xs:string">
-                        <xs:enumeration value="equals"/>
-                        <xs:enumeration value="notequals"/>
-                      </xs:restriction>
-                    </xs:simpleType>
-                  </xs:attribute>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="width">
-                <xs:complexType>
-                  <xs:attribute name="value" type="xs:unsignedInt"/>
-                  <xs:attribute name="accuracy" type="xs:unsignedInt"/>
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="height">
-                <xs:complexType>
-                  <xs:attribute name="value" type="xs:unsignedInt"/>
-                  <xs:attribute name="accuracy" type="xs:unsignedInt"/>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-      <xs:attribute name="process" type="xs:string" use="required" />
-      <xs:attribute name="mode" use="required">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="hold"/>
-            <xs:enumeration value="close"/>
-            <xs:enumeration value="remember"/>
-            <xs:enumeration value="topmost"/>
-            <xs:enumeration value="notopmost"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
-  </xs:element>
+
+  <xs:element name="window" type="window"/>
+
+  <xs:complexType name="window">
+    <xs:sequence>
+      <xs:element name="selectedposition" type="xs:int"/>
+      <xs:element maxOccurs="unbounded" name="position" type="position"/>
+      <xs:element name="selectedsize" type="xs:int"/>
+      <xs:element maxOccurs="unbounded" name="size" type="size"/>
+      <xs:element maxOccurs="unbounded" name="condition" type="condition"/>
+    </xs:sequence>
+    <xs:attribute name="process" type="xs:string" use="required" />
+    <xs:attribute name="mode" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="hold"/>
+          <xs:enumeration value="close"/>
+          <xs:enumeration value="remember"/>
+          <xs:enumeration value="topmost"/>
+          <xs:enumeration value="notopmost"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="enabled" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="position">
+    <xs:attribute name="X" type="xs:int" use="required" />
+    <xs:attribute name="Y" type="xs:int" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="size">
+    <xs:attribute name="width" type="xs:int" use="required" />
+    <xs:attribute name="height" type="xs:int" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="condition">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" name="title" type="title"/>
+      <xs:element name="width">
+        <xs:complexType>
+          <xs:attribute name="value" type="xs:int"/>
+          <xs:attribute name="accuracy" type="xs:int"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="height">
+        <xs:complexType>
+          <xs:attribute name="value" type="xs:int"/>
+          <xs:attribute name="accuracy" type="xs:int"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="title">
+    <xs:attribute name="value" type="xs:string"/>
+    <xs:attribute name="isempty" type="xs:boolean"/>
+    <xs:attribute name="mode">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="equals"/>
+          <xs:enumeration value="notequals"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:complexType>
 </xs:schema>

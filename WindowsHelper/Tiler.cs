@@ -13,64 +13,70 @@ namespace WindowsHelper
         {
             new window()
             {
+                enabled = true,
                 process = "ShooterGame",
                 mode = windowMode.hold,
-                position = new List<windowPosition>()
+                selectedposition = 0,
+                position = new List<position>()
                 {
-                    new windowPosition() {X = 0, Y = 0},
-                    new windowPosition() {X = 960, Y = 0},
-                    new windowPosition() {X = 1920, Y = 0}
+                    new position() {X = 0, Y = 0},
+                    new position() {X = 960, Y = 0},
+                    new position() {X = 1920, Y = 0}
                 },
-                size = new List<windowSize>()
+                selectedsize = 0,
+                size = new List<size>()
                 {
-                    new windowSize() {width = 1920, height = 1080}
+                    new size() {width = 1920, height = 1080}
                 }
             },
             new window()
             {
+                enabled = true,
                 process = "Zona",
                 mode = windowMode.close,
-                condition = new List<windowCondition>()
+                condition = new List<condition>()
                 {
-                    new windowCondition()
+                    new condition()
                     {
-                        title = new List<windowConditionTitle>()
+                        title = new List<title>()
                         {
-                            new windowConditionTitle() {value = "Zona", mode = windowConditionTitleMode.equals},
-                            new windowConditionTitle() {isempty = true}
+                            new title() {value = "Zona", mode = titleMode.equals},
+                            new title() {isempty = true}
                         }
                     },
-                    new windowCondition()
+                    new condition()
                     {
-                        width = new windowConditionWidth() {value = 162, accuracy = 10},
-                        height = new windowConditionHeight() {value = 372, accuracy = 10}
+                        width = new conditionWidth() {value = 162, accuracy = 10},
+                        height = new conditionHeight() {value = 372, accuracy = 10}
                     }
                 }
             },
             new window()
             {
+                enabled = true,
                 process = "Zona",
                 mode = windowMode.remember,
-                condition = new List<windowCondition>()
+                condition = new List<condition>()
                 {
-                    new windowCondition()
+                    new condition()
                     {
-                        title = new List<windowConditionTitle>()
+                        title = new List<title>()
                         {
-                            new windowConditionTitle() {value = "Zona", mode = windowConditionTitleMode.notequals}
+                            new title() {value = "Zona", mode = titleMode.notequals}
                         }
                     },
-                    new windowCondition()
+                    new condition()
                     {
-                        title = new List<windowConditionTitle>()
+                        title = new List<title>()
                         {
-                            new windowConditionTitle() {isempty = false}
+                            new title() {isempty = false}
                         }
                     }
                 }
             },
             new window()
             {
+                enabled = true,
                 process = "Shell_TrayWnd",
                 mode = windowMode.notopmost
             }

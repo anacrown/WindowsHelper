@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Input;
 using System.Xml.Serialization;
 using Serilog;
 using WPFTaskbarNotifier;
@@ -15,10 +13,9 @@ namespace WindowsHelper
 {
     public partial class MainWindow : TaskbarNotifier
     {
-        private List<window> _windows;
-        private ObservableCollection<WindowViewModel> _windowsVm;
+        private ObservableCollection<WindowVm> _windowsVm;
 
-        public ObservableCollection<WindowViewModel> Windows
+        public ObservableCollection<WindowVm> Windows
         {
             get => _windowsVm;
             set
@@ -44,6 +41,8 @@ namespace WindowsHelper
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             SettingsLoad();
+
+            Notify();
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
@@ -79,7 +78,7 @@ namespace WindowsHelper
             {
                 var fs = new FileStream(Properties.Resources.SettingsFile, FileMode.OpenOrCreate);
                 var formatter = new XmlSerializer(typeof(List<window>));
-                formatter.Serialize(fs, _windows ?? Tiler.DefaultData);
+                formatter.Serialize(fs, Windows.Select(w => w.Window).ToList());
 
                 Log.Debug("Файл конфигурации успешно сохранен");
             }
@@ -93,16 +92,17 @@ namespace WindowsHelper
         {
             try
             {
+                List<window> windows;
                 if (File.Exists(Properties.Resources.SettingsFile))
                 {
                     var fs = new FileStream(Properties.Resources.SettingsFile, FileMode.OpenOrCreate);
                     var formatter = new XmlSerializer(typeof(List<window>));
-                    _windows = (List<window>)formatter.Deserialize(fs);
+                    windows = (List<window>)formatter.Deserialize(fs);
                 }
                 else
-                    _windows = Tiler.DefaultData;
+                    windows = Tiler.DefaultData;
 
-                Windows = new ObservableCollection<WindowViewModel>(_windows.Select(w => w.CreateViewModel()));
+                Windows = new ObservableCollection<WindowVm>(windows.Select(w => new WindowVm(w)));
 
                 Log.Debug("Файл конфигурации загружен");
             }
