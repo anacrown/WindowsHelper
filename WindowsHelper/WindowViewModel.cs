@@ -74,7 +74,7 @@ namespace WindowsHelper
         {
             while (!_worker.CancellationPending)
             {
-                if (CheckCondition(_window.condition))
+                if (_window.enabled && CheckCondition(_window.condition))
                 {
                     var handle = WinApi.FindWindow(_window.process);
                     if (handle != IntPtr.Zero)
