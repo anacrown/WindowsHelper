@@ -5,7 +5,7 @@
                  xmlns:windowsHelper="clr-namespace:WindowsHelper"
                  Loaded="MainWindow_OnLoaded" 
                  Closed="MainWindow_OnClosed"
-                 Width="400" Height="200">
+                 SizeToContent="Width" Height="200">
     <Grid>
         <ListView ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type windowsHelper:MainWindow}}, Path=Windows}">
             <ListView.Resources>
@@ -26,26 +26,26 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Window.process}"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Window.mode}"/>
-                    <GridViewColumn>
+                    <GridViewColumn Header="Process name" DisplayMemberBinding="{Binding Process}"/>
+                    <GridViewColumn Header="Window mode" DisplayMemberBinding="{Binding Mode}"/>
+                    <GridViewColumn Header="Size">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type windowsHelper:WindowVm}">
-                                <ComboBox ItemsSource="{Binding Window.size}" SelectedIndex="{Binding SelectedSize}"/>
+                                <ComboBox ItemsSource="{Binding Size}" SelectedIndex="{Binding SelectedSize}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn>
+                    <GridViewColumn Header="Position">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type windowsHelper:WindowVm}">
-                                <ComboBox ItemsSource="{Binding Window.position}" SelectedIndex="{Binding SelectedPosition}"/>
+                                <ComboBox ItemsSource="{Binding Position}" SelectedIndex="{Binding SelectedPosition}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn>
+                    <GridViewColumn Header="Enabled">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type windowsHelper:WindowVm}">
-                                <RadioButton IsChecked="{Binding Enabled}"/>
+                                <CheckBox IsChecked="{Binding Enabled}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
