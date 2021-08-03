@@ -146,6 +146,11 @@ namespace WindowsHelper
             }
         }
 
+        public void Pause() => _unitor.Pause();
+
+        public void Resume() => _unitor.Resume();
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

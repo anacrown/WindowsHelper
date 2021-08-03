@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Threading;
+using Serilog;
 
 namespace WindowsHelper
 {
     public class Unitor : DispatcherObject
     {
+        private bool _started;
         private readonly WindowVm _vm;
-        private readonly DispatcherTimer timer;
+        private readonly DispatcherTimer _timer;
 
         public Unitor(WindowVm vm)
         {
             _vm = vm;
-            timer = new DispatcherTimer(TimeSpan.FromMilliseconds(400), DispatcherPriority.Normal, Timer_Tick, Dispatcher);
+            _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(400), DispatcherPriority.Normal, Timer_Tick, Dispatcher);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -57,6 +58,9 @@ namespace WindowsHelper
                             _vm.Size[_vm.SelectedSize]);
                     }
 
+                    if (currentRect.Equals(requiredRect)) break;
+
+                    Log.Debug("SetWindowPos {process}", _vm.Process);
                     WinApi.SetWindowPos(handle,
                         (IntPtr)WinApi.SpecialWindowHandles.HWND_TOP,
                         requiredRect.Left,
@@ -68,6 +72,7 @@ namespace WindowsHelper
                     break;
                 case windowMode.close:
 
+                    Log.Debug("SendMessage CLOSE {process}", _vm.Process);
                     WinApi.SendMessage(handle, WinApi.WM_SYSCOMMAND, (int)WinApi.SysCommands.SC_CLOSE, IntPtr.Zero);
 
                     break;
@@ -78,6 +83,7 @@ namespace WindowsHelper
                         ? WinApi.SpecialWindowHandles.HWND_TOPMOST
                         : WinApi.SpecialWindowHandles.HWND_NOTOPMOST;
 
+                    Log.Debug("SetWindowPos {process}", _vm.Process);
                     WinApi.SetWindowPos(handle,
                         (IntPtr)hWndInsertAfter,
                         currentRect.Left,
@@ -122,7 +128,7 @@ namespace WindowsHelper
                 _vm.SelectedSize = _vm.Size.IndexOf(size);
             }
 
-            timer.Start();
+            TimerStart();
         }
 
         public void Stop()
@@ -139,7 +145,33 @@ namespace WindowsHelper
                 _vm.SelectedSize = 0;
             }
 
-            timer.Stop();
+            TimerStop();
+        }
+
+        public void Pause()
+        {
+            if (_vm.Process == "Shell_TrayWnd")
+                TimerStop();
+        }
+
+        public void Resume()
+        {
+            if (_vm.Process == "Shell_TrayWnd")
+                TimerStart();
+        }
+
+        private void TimerStart()
+        {
+            if (_started) return;
+            _started = true;
+            _timer.Start();
+        }
+
+        private void TimerStop()
+        {
+            if (!_started) return;
+            _started = false;
+            _timer.Stop();
         }
     }
 }

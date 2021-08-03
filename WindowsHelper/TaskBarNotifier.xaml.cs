@@ -50,6 +50,34 @@ namespace WindowsHelper
             SettingsSave();
         }
 
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (e.Property == VisibilityProperty && _windowsVm != null)
+            {
+                Log.Debug("OnPropertyChanged {property} value {NewValue}", e.Property.Name, e.NewValue);
+
+                switch ((Visibility)e.NewValue)
+                {
+                    case Visibility.Visible:
+
+                        foreach (var vm in _windowsVm) vm.Pause();
+
+                        break;
+                    case Visibility.Hidden:
+
+                        foreach (var vm in _windowsVm) vm.Resume();
+
+                        break;
+                    case Visibility.Collapsed:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            base.OnPropertyChanged(e);
+        }
+
         private void OpenSettingsFile()
         {
             try
