@@ -50,7 +50,7 @@ namespace WindowsHelper
             SettingsSave();
         }
 
-        private async void OpenSettingsFile()
+        private void OpenSettingsFile()
         {
             try
             {

@@ -377,6 +377,17 @@ namespace WindowsHelper
             public int Top;         // y position of upper-left corner
             public int Right;       // x position of lower-right corner
             public int Bottom;      // y position of lower-right corner
+
+            public override bool Equals(object obj)
+            {
+                if (obj is RECT rect) return 
+                        rect.Left == Left &&
+                        rect.Top == Top &&
+                        rect.Right == Right &&
+                        rect.Bottom == Bottom;
+
+                return base.Equals(obj);
+            }
         }
         public enum SysCommands : int
         {
@@ -421,9 +432,11 @@ namespace WindowsHelper
     }
     public static class RectExtension
     {
-        public static (position position, size size) GetPositionAndSize(this WinApi.RECT rect) => (
-            new position() { X = rect.Left, Y = rect.Top },
-            new size() { width = rect.Right - rect.Left, height = rect.Bottom - rect.Top });
+        public static void GetPositionAndSize(this WinApi.RECT rect, out position position, out size size)
+        {
+            position = new position() { X = rect.Left, Y = rect.Top };
+            size = new size() { width = rect.Right - rect.Left, height = rect.Bottom - rect.Top };
+        }
 
         public static WinApi.RECT FromPositionAndSize(this WinApi.RECT rect, position position, size size)
         {

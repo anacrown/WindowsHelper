@@ -14,6 +14,26 @@ namespace WindowsHelper
             new window()
             {
                 enabled = true,
+                process = "notepad++",
+                mode = windowMode.hold,
+                selectedposition = 0,
+                position = new List<position>()
+                {
+                    new position() {X = 0, Y = 0},
+                    new position() {X = 960, Y = 0},
+                    new position() {X = 1920, Y = 0}
+                },
+                selectedsize = 0,
+                size = new List<size>()
+                {
+                    new size() {width = 200, height = 200},
+                    new size() {width = 400, height = 300},
+                    new size() {width = 800, height = 400}
+                }
+            },
+            new window()
+            {
+                enabled = true,
                 process = "ShooterGame",
                 mode = windowMode.hold,
                 selectedposition = 0,

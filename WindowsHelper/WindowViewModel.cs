@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,6 +12,8 @@ namespace WindowsHelper
     {
         public window Window { get; }
 
+        private readonly Unitor unitor;
+
         public bool Enabled
         {
             get => Window.enabled;
@@ -21,6 +21,11 @@ namespace WindowsHelper
             {
                 Window.enabled = value;
                 OnPropertyChanged();
+
+                if (Window.enabled)
+                    unitor?.Run();
+                else
+                    unitor?.Stop();
             }
         }
 
@@ -29,7 +34,7 @@ namespace WindowsHelper
             get => Window.selectedsize;
             set
             {
-                Window.selectedsize = value; 
+                Window.selectedsize = value;
                 OnPropertyChanged();
             }
         }
@@ -39,7 +44,7 @@ namespace WindowsHelper
             get => Window.selectedposition;
             set
             {
-                Window.selectedposition = value; 
+                Window.selectedposition = value;
                 OnPropertyChanged();
             }
         }
@@ -47,6 +52,7 @@ namespace WindowsHelper
         public WindowVm(window window)
         {
             Window = window;
+            unitor = new Unitor(window);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -55,68 +61,6 @@ namespace WindowsHelper
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public class Unitor
-    {
-        private readonly window _window;
-        private BackgroundWorker _worker = new BackgroundWorker();
-
-        public Unitor(window window)
-        {
-            _window = window;
-            _worker.DoWork += DoWork;
-            _worker.WorkerSupportsCancellation = true;
-        }
-
-        private void DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (!_worker.CancellationPending)
-            {
-                if (_window.enabled && CheckCondition(_window.condition))
-                {
-                    var handle = WinApi.FindWindow(_window.process);
-                    if (handle != IntPtr.Zero)
-                    {
-                        var requiredRect = new WinApi.RECT().FromPositionAndSize(
-                            _window.position[_window.selectedposition], 
-                            _window.size[_window.selectedsize]);
-
-                        switch (_window.mode)
-                        {
-                            case windowMode.hold:
-
-                                if (WinApi.GetWindowRect(handle, out var currentRect))
-                                {
-
-                                }
-
-                                break;
-                            case windowMode.close:
-                                break;
-                            case windowMode.remember:
-                                break;
-                            case windowMode.topmost:
-                                break;
-                            case windowMode.notopmost:
-                                break;
-                        }
-                    }
-
-                    Thread.Sleep(400);
-                }
-            }
-        }
-
-        private bool CheckCondition(IEnumerable<condition> conditions)
-        {
-            return true;
-        }
-
-        public void Run()
-        {
-
         }
     }
 }
