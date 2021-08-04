@@ -14,8 +14,20 @@ namespace WindowsHelper
             new window()
             {
                 enabled = true,
-                process = "notepad++",
-                mode = windowMode.remember
+                process = "AoMX",
+                mode = windowMode.hold,
+                selectedposition = 0,
+                position = new List<position>()
+                {
+                    new position() {X = 0, Y = 0},
+                    new position() {X = 960, Y = 0},
+                    new position() {X = 1920, Y = 0}
+                },
+                selectedsize = 0,
+                size = new List<size>()
+                {
+                    new size() {width = 1920, height = 1080}
+                }
             },
             new window()
             {
@@ -46,7 +58,6 @@ namespace WindowsHelper
                     {
                         title = new List<title>()
                         {
-                            new title() {value = "Zona", mode = titleMode.equals},
                             new title() {isempty = true}
                         }
                     },

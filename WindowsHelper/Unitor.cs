@@ -21,14 +21,13 @@ namespace WindowsHelper
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (!CheckCondition(_vm.Condition)) return;
-
-            var handle = GetHandle(_vm.Process);
-            if (handle == IntPtr.Zero)
+            if (!GetHandle(_vm.Process, out var handle, out var title))
                 return;
-
+                
             if (!WinApi.GetWindowRect(handle, out var currentRect))
                 return;
+
+            if (!CheckConditions(handle, title, currentRect, _vm.Condition)) return;
 
             switch (_vm.Mode)
             {
@@ -96,23 +95,79 @@ namespace WindowsHelper
             }
         }
 
-        private IntPtr GetHandle(string process)
+        private bool GetHandle(string processName, out IntPtr handle, out string title)
         {
-            var handle = WinApi.FindWindow(_vm.Process, null);
-            if (handle == IntPtr.Zero) handle = Process.GetProcessesByName(process).FirstOrDefault()?.MainWindowHandle ?? IntPtr.Zero;
+            title = null;
+            handle = WinApi.FindWindow(_vm.Process, null);
+            if (handle == IntPtr.Zero)
+            {
+                var process = Process.GetProcessesByName(processName).FirstOrDefault();
+                handle = process?.MainWindowHandle ?? IntPtr.Zero;
+                title = process?.MainWindowTitle;
 
-            return handle;
+                return handle != IntPtr.Zero;
+            }
+
+            return handle != IntPtr.Zero;
         }
 
-        public static bool CheckCondition(IEnumerable<condition> conditions)
+        public static bool CheckConditions(IntPtr handle, string windowTitle, WinApi.RECT rect, List<condition> conditions)
         {
-            return true;
+            if (!conditions.Any())
+                return true;
+
+            var conditionResults = conditions.Select(condition => CheckCondition(handle, windowTitle, rect, condition)).ToArray();
+
+            var result = conditionResults.Aggregate(conditionResults.First(), (current, t) => current & t);
+
+            return result;
+        }
+
+        public static bool CheckCondition(IntPtr handle, string windowTitle, WinApi.RECT rect, condition condition)
+        {
+            var titleResults = condition.title.Select(title => CheckConditionTitle(windowTitle, title)).ToArray();
+
+            var result = titleResults.Any() && titleResults.Aggregate(titleResults.First(), (current, t) => current | t);
+
+            var widthResult = CheckConditionWidth(rect, condition.width);
+            if (widthResult != null)
+                result |= widthResult.Value;
+
+            var heightResult = CheckConditionHeight(rect, condition.height);
+            if (heightResult != null)
+                result |= heightResult.Value;
+
+            return result;
+        }
+
+        public static bool CheckConditionTitle(string windowTitle, title title)
+        {
+            return !string.IsNullOrEmpty(title.value)
+                ? title.mode == titleMode.@equals 
+                    ? title.value == windowTitle 
+                    : title.value != windowTitle
+                : title.isempty
+                    ? string.IsNullOrEmpty(windowTitle)
+                    : !string.IsNullOrEmpty(windowTitle);
+        }
+
+        public static bool? CheckConditionWidth(WinApi.RECT rect, conditionWidth width)
+        {
+            return width != null && !width.IsEmpty()
+                ? (bool?) (Math.Abs(rect.Right - rect.Left - width.value) < width.accuracy)
+                : null;
+        }
+
+        public static bool? CheckConditionHeight(WinApi.RECT rect, conditionHeight height)
+        {
+            return height != null && !height.IsEmpty()
+                ? (bool?) (Math.Abs(rect.Bottom - rect.Top - height.value) < height.accuracy)
+                : null;
         }
 
         public void Run()
         {
-            var handle = GetHandle(_vm.Process);
-            if (handle == IntPtr.Zero)
+            if (!GetHandle(_vm.Process, out var handle, out var title))
                 return;
 
             if ((_vm.Position.Count <= _vm.SelectedPosition ||
@@ -133,8 +188,7 @@ namespace WindowsHelper
 
         public void Stop()
         {
-            var handle = GetHandle(_vm.Process);
-            if (handle == IntPtr.Zero)
+            if (!GetHandle(_vm.Process, out var handle, out var title))
                 return;
 
             if (_vm.Mode == windowMode.remember)
@@ -173,5 +227,12 @@ namespace WindowsHelper
             _started = false;
             _timer.Stop();
         }
+    }
+
+    public static class ConditionExtension
+    {
+        public static bool IsEmpty(this conditionWidth width) => width.value == 0 && width.accuracy == 0;
+
+        public static bool IsEmpty(this conditionHeight height) => height.value == 0 && height.accuracy == 0;
     }
 }
