@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.Principal;
 using System.Windows;
+using System.Xml;
 using System.Xml.Serialization;
 using Serilog;
 using WPFTaskbarNotifier;
@@ -40,9 +45,36 @@ namespace WindowsHelper
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            if (!IsRunAsAdministrator())
+            {
+                var processInfo = new ProcessStartInfo(Assembly.GetExecutingAssembly().CodeBase);
+
+                processInfo.UseShellExecute = true;
+                processInfo.Verb = "runas";
+
+                try
+                {
+                    Process.Start(processInfo);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Sorry, this application must be run as Administrator.");
+                }
+
+                Application.Current.Shutdown();
+            }
+
             SettingsLoad();
 
             Notify();
+        }
+
+        private bool IsRunAsAdministrator()
+        {
+            var wi = WindowsIdentity.GetCurrent();
+            var wp = new WindowsPrincipal(wi);
+
+            return wp.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
@@ -82,6 +114,13 @@ namespace WindowsHelper
         {
             try
             {
+                SettingsSave();
+                
+                var fs = new FileStream(Properties.Resources.SettingsFile, FileMode.Create);
+                var formatter = new XmlSerializer(typeof(List<window>));
+                formatter.Serialize(fs, Windows.Select(vm => vm.Window).ToList());
+                fs.Close();
+
                 var proc = new Process
                 {
                     StartInfo =
@@ -93,6 +132,13 @@ namespace WindowsHelper
 
                 proc.Start();
                 proc.WaitForExit();
+
+                fs = new FileStream(Properties.Resources.SettingsFile, FileMode.Open);
+                var windows = (List<window>)formatter.Deserialize(fs);
+
+                Windows = new ObservableCollection<WindowVm>(windows.Select(w => new WindowVm(w)));
+
+                SettingsSave();
             }
             catch (Exception ex)
             {
@@ -104,9 +150,16 @@ namespace WindowsHelper
         {
             try
             {
-                var fs = new FileStream(Properties.Resources.SettingsFile, FileMode.OpenOrCreate);
+                var ms = new MemoryStream();
                 var formatter = new XmlSerializer(typeof(List<window>));
-                formatter.Serialize(fs, Windows.Select(w => w.Window).ToList());
+                formatter.Serialize(ms, Windows.Select(w => w.Window).ToList());
+                ms.Position = 0;
+
+                if (Properties.Settings.Default.UserSettings == null)
+                    Properties.Settings.Default.UserSettings = new XmlDocument();
+
+                Properties.Settings.Default.UserSettings.Load(ms);
+                Properties.Settings.Default.Save();
 
                 Log.Debug("Файл конфигурации успешно сохранен");
             }
@@ -121,11 +174,13 @@ namespace WindowsHelper
             try
             {
                 List<window> windows;
-                if (File.Exists(Properties.Resources.SettingsFile))
+                if (Properties.Settings.Default.UserSettings != null)
                 {
-                    var fs = new FileStream(Properties.Resources.SettingsFile, FileMode.OpenOrCreate);
+                    var ms = new MemoryStream();
+                    Properties.Settings.Default.UserSettings.Save(ms);
+                    ms.Position = 0;
                     var formatter = new XmlSerializer(typeof(List<window>));
-                    windows = (List<window>)formatter.Deserialize(fs);
+                    windows = (List<window>)formatter.Deserialize(ms);
                 }
                 else
                     windows = Tiler.DefaultData;
