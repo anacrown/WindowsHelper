@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -136,6 +134,13 @@ namespace WindowsHelper
                 fs = new FileStream(Properties.Resources.SettingsFile, FileMode.Open);
                 var windows = (List<window>)formatter.Deserialize(fs);
 
+                if (Windows != null && Windows.Any())
+                    foreach (var windowVm in Windows)
+                    {
+                        windowVm.Stop();
+                        windowVm.Dispose();
+                    }
+
                 Windows = new ObservableCollection<WindowVm>(windows.Select(w => new WindowVm(w)));
 
                 SettingsSave();
@@ -184,6 +189,13 @@ namespace WindowsHelper
                 }
                 else
                     windows = Tiler.DefaultData;
+
+                if (Windows != null && Windows.Any())
+                    foreach (var windowVm in Windows)
+                    {
+                        windowVm.Stop();
+                        windowVm.Dispose();
+                    }
 
                 Windows = new ObservableCollection<WindowVm>(windows.Select(w => new WindowVm(w)));
 

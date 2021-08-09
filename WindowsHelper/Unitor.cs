@@ -7,7 +7,7 @@ using Serilog;
 
 namespace WindowsHelper
 {
-    public class Unitor : DispatcherObject
+    public class Unitor : DispatcherObject, IDisposable
     {
         private bool _started;
         private readonly WindowVm _vm;
@@ -219,6 +219,8 @@ namespace WindowsHelper
             if (_started) return;
             _started = true;
             _timer.Start();
+
+            Log.Debug("Unitor {Process} Started", _vm.Process);
         }
 
         private void TimerStop()
@@ -226,6 +228,15 @@ namespace WindowsHelper
             if (!_started) return;
             _started = false;
             _timer.Stop();
+
+            Log.Debug("Unitor {Process} Stopped", _vm.Process);
+        }
+
+        public void Dispose()
+        {
+            TimerStop();
+
+            Log.Debug("Unitor {Process} Disposed", _vm.Process);
         }
     }
 

@@ -4,11 +4,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Serilog;
 using WindowsHelper.Annotations;
 
 namespace WindowsHelper
 {
-    public class WindowVm : INotifyPropertyChanged
+    public class WindowVm : INotifyPropertyChanged, IDisposable
     {
         public window Window { get; }
 
@@ -150,6 +151,9 @@ namespace WindowsHelper
 
         public void Resume() => _unitor.Resume();
 
+        public void Stop() => _unitor.Stop();
+
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -157,6 +161,13 @@ namespace WindowsHelper
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Dispose()
+        {
+            _unitor?.Stop();
+
+            Log.Debug("ViewModel {Process} Disposed", Process);
         }
     }
 }
