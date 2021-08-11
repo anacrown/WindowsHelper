@@ -94,6 +94,27 @@ namespace WindowsHelper
             new window()
             {
                 enabled = true,
+                process = "dnplayer",
+                mode = windowMode.hold,
+                size = new List<size>()
+                {
+                    new size(){width = 974, height = 527}
+                },
+                position = new List<position>()
+                {
+                    new position(){X = -7, Y = 0},
+                    new position(){X = 953, Y = 0},
+                    new position(){X = 1913, Y = 0},
+                    new position(){X = 2873, Y = 0},
+                    new position(){X = -7, Y = 520},
+                    new position(){X = 953, Y = 520},
+                    new position(){X = 1913, Y = 520},
+                    new position(){X = 2873, Y = 520},
+                }
+            },
+            new window()
+            {
+                enabled = true,
                 process = "Shell_TrayWnd",
                 mode = windowMode.notopmost
             }

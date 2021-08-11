@@ -41,6 +41,14 @@ namespace WindowsHelper
             SettingsLoad();
         }
 
+        private void ResetMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.UserSettings = null;
+            Properties.Settings.Default.Save();
+
+            SettingsLoad();
+        }
+
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             if (!IsRunAsAdministrator())

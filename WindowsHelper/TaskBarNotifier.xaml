@@ -5,7 +5,7 @@
                  xmlns:windowsHelper="clr-namespace:WindowsHelper"
                  Loaded="MainWindow_OnLoaded" 
                  Closed="MainWindow_OnClosed"
-                 SizeToContent="Width" Height="200">
+                 SizeToContent="WidthAndHeight">
     <Grid>
         <ListView ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type windowsHelper:MainWindow}}, Path=Windows}">
             <ListView.Resources>
@@ -57,6 +57,7 @@
                 <ContextMenu>
                     <MenuItem Header="Open" Click="OpenMenuItem_OnClick"/>
                     <MenuItem Header="Configure" Click="ConfigureMenuItem_OnClick"/>
+                    <MenuItem Header="Reset configuration" Click="ResetMenuItem_OnClick"/>
                     <Separator/>
                     <MenuItem Header="Exit" Click="ExitMenuItem_OnClick"/>
                 </ContextMenu>
