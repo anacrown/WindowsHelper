@@ -13,17 +13,24 @@ namespace WindowsHelper
         private readonly WindowVm _vm;
         private readonly DispatcherTimer _timer;
 
+        public bool Started => _started;
+
         public Unitor(WindowVm vm)
         {
             _vm = vm;
-            _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(400), DispatcherPriority.Normal, Timer_Tick, Dispatcher);
+            _timer = new DispatcherTimer(DispatcherPriority.Normal, Dispatcher)
+            {
+                IsEnabled = false,
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+            _timer.Tick += Timer_Tick;
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (!GetHandle(_vm.Process, out var handle, out var title))
                 return;
-                
+
             if (!WinApi.GetWindowRect(handle, out var currentRect))
                 return;
 
@@ -143,8 +150,8 @@ namespace WindowsHelper
         public static bool CheckConditionTitle(string windowTitle, title title)
         {
             return !string.IsNullOrEmpty(title.value)
-                ? title.mode == titleMode.@equals 
-                    ? title.value == windowTitle 
+                ? title.mode == titleMode.@equals
+                    ? title.value == windowTitle
                     : title.value != windowTitle
                 : title.isempty
                     ? string.IsNullOrEmpty(windowTitle)
@@ -154,14 +161,14 @@ namespace WindowsHelper
         public static bool? CheckConditionWidth(WinApi.RECT rect, conditionWidth width)
         {
             return width != null && !width.IsEmpty()
-                ? (bool?) (Math.Abs(rect.Right - rect.Left - width.value) < width.accuracy)
+                ? (bool?)(Math.Abs(rect.Right - rect.Left - width.value) < width.accuracy)
                 : null;
         }
 
         public static bool? CheckConditionHeight(WinApi.RECT rect, conditionHeight height)
         {
             return height != null && !height.IsEmpty()
-                ? (bool?) (Math.Abs(rect.Bottom - rect.Top - height.value) < height.accuracy)
+                ? (bool?)(Math.Abs(rect.Bottom - rect.Top - height.value) < height.accuracy)
                 : null;
         }
 

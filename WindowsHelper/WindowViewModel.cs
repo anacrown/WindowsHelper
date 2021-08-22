@@ -16,18 +16,17 @@ namespace WindowsHelper
         private readonly Unitor _unitor;
         private ObservableCollection<size> _size;
         private ObservableCollection<position> _position;
+        private bool _enabled;
 
         public bool Enabled
         {
-            get => Window.enabled;
+            get => _unitor.Started;
             set
             {
-                Window.enabled = value;
-
-                if (Window.enabled)
-                    _unitor?.Run();
+                if (_unitor.Started)
+                    _unitor.Stop();
                 else
-                    _unitor?.Stop();
+                    _unitor.Run();
 
                 OnPropertyChanged();
             }
@@ -86,8 +85,6 @@ namespace WindowsHelper
             Position.CollectionChanged += PositionOnCollectionChanged;
 
             _unitor = new Unitor(this);
-            if (Window.enabled)
-                _unitor.Run();
         }
 
         private void SizeOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

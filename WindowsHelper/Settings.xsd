@@ -23,7 +23,6 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="enabled" type="xs:boolean" use="required"/>
   </xs:complexType>
 
   <xs:complexType name="position">

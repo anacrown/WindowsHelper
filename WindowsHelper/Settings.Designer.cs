@@ -29,7 +29,6 @@ namespace WindowsHelper
         private List<condition> _condition;
         private string _process;
         private windowMode _mode;
-        private bool _enabled;
         #endregion
 
         public window()
@@ -120,18 +119,6 @@ namespace WindowsHelper
             set
             {
                 _mode = value;
-            }
-        }
-
-        public bool enabled
-        {
-            get
-            {
-                return _enabled;
-            }
-            set
-            {
-                _enabled = value;
             }
         }
     }

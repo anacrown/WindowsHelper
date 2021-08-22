@@ -13,7 +13,6 @@ namespace WindowsHelper
         {
             new window()
             {
-                enabled = true,
                 process = "AoMX",
                 mode = windowMode.hold,
                 selectedposition = 0,
@@ -31,7 +30,6 @@ namespace WindowsHelper
             },
             new window()
             {
-                enabled = true,
                 process = "ShooterGame",
                 mode = windowMode.hold,
                 selectedposition = 0,
@@ -49,7 +47,6 @@ namespace WindowsHelper
             },
             new window()
             {
-                enabled = true,
                 process = "Zona",
                 mode = windowMode.close,
                 condition = new List<condition>()
@@ -70,7 +67,6 @@ namespace WindowsHelper
             },
             new window()
             {
-                enabled = true,
                 process = "Zona",
                 mode = windowMode.remember,
                 condition = new List<condition>()
@@ -93,7 +89,6 @@ namespace WindowsHelper
             },
             new window()
             {
-                enabled = true,
                 process = "dnplayer",
                 mode = windowMode.hold,
                 size = new List<size>()
@@ -114,7 +109,6 @@ namespace WindowsHelper
             },
             new window()
             {
-                enabled = true,
                 process = "Shell_TrayWnd",
                 mode = windowMode.notopmost
             }
